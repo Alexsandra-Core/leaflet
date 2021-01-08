@@ -1,0 +1,15 @@
+#map{
+    width: 100%;
+    height: 500px;
+}
+
+.mt-20{
+    margin-top: 20px;
+}
+.mt-5{
+    margin-top: 5px;
+}
+
+.option-icon{
+    font-size: 30px;
+}
