@@ -7,6 +7,7 @@
  */
 $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES['file']['name']);
+$target_name = $_FILES['file']['name'];
 $uploadOk = 1;
 $csvFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
@@ -51,8 +52,29 @@ if ($uploadOk == 0) {
             // Close the file
             fclose($h);
         }
-        echo json_encode($csv_data);
+        echo input_upload($target_name);
     } else {
         echo "Sorry, there was an error uploading your file.";
+    }
+}
+
+function input_upload($filename)
+{
+    if (file_exists("upload.json")){
+        $current_data = file_get_contents("upload.json");
+        $array_data = json_decode($current_data, true);
+        $extra = array(
+            "filename" => $filename
+        );
+        $array_data[] = $extra;
+        $final_data = json_encode($array_data);
+        if (file_put_contents("upload.json", $final_data))
+        {
+            return $final_data;
+        }
+
+    }
+    else{
+        $error = "JSON file not exists";
     }
 }

@@ -7,13 +7,13 @@
  */
 
     $data_for_csv = $_POST["data"];
-    $get_timeStamp = $_POST["timestamp"];
+    $filename = $_POST["filename"];
 
     $json_data= json_encode($data_for_csv);
     $data_for_write = json_decode($json_data, true);
 
     // set new csv file name.
-    $new_csv_file = $get_timeStamp . ".csv";
+    $new_csv_file = $filename . ".csv";
 
     try {
         //create a new csv file and store it.
@@ -29,30 +29,32 @@
         fclose($new_csv);
 
         // save log in flag
-        input_log($new_csv_file, $get_timeStamp);
+        $log_result = input_log($new_csv_file, $filename);
 
-        echo "Saved all markers info in " . $new_csv_file . ".";
+        // echo "Saved all markers info in " . $new_csv_file . ".";
+        echo $log_result;
     }
     catch (Exception $e)
     {
         echo "Caught exception: ",  $e->getMessage(), "\n";
     }
 
-    function input_log($downloadUrl, $timeStamp)
+    function input_log($downloadUrl, $filename)
     {
         if (file_exists("flag.json")){
             $current_data = file_get_contents("flag.json");
             $array_data = json_decode($current_data, true);
             $extra = array(
                 "downloadUrl" => $downloadUrl,
-                "timestamp" => $timeStamp
+                "filename" => $filename
             );
             $array_data[] = $extra;
             $final_data = json_encode($array_data);
             if (file_put_contents("flag.json", $final_data))
             {
-                $message = "Success";     
+                return $final_data;
             }
+
         }
         else{
             $error = "JSON file not exists";
